@@ -1,16 +1,100 @@
-# message
+# Message
 
-A new Flutter project.
+Современное приложение для обмена сообщениями на основе Flutter, позволяющее пользователям подключаться, общаться в чате, совершать звонки и управлять контактами без проблем.
 
-## Getting Started
+## Функции
 
-This project is a starting point for a Flutter application.
+- **Аутентификация**: Безопасный вход и регистрация пользователей с использованием Firebase Auth
+- **Чат в реальном времени**: Мгновенный обмен сообщениями с обновлениями в реальном времени с помощью Firebase Firestore
+- **Голосовые звонки**: Интегрированная функция звонков
+- **Управление контактами**: Добавление и управление контактами
+- **Настройки**: Настройка опыта использования приложения
+- **Темная/Светлая тема**: Автоматическое переключение темы на основе системных настроек
+- **Кросс-платформенность**: Работает на Android, iOS, Web, Windows, macOS и Linux
 
-A few resources to get you started if this is your first Flutter project:
+## Технологический стек
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- **Фреймворк**: Flutter
+- **Управление состоянием**: Паттерн BLoC
+- **Бэкенд**: Firebase (Auth, Firestore)
+- **Сетевое взаимодействие**: Dio с Retrofit
+- **Локальное хранение**: Hive
+- **Маршрутизация**: Go Router
+- **Внедрение зависимостей**: GetIt
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Предварительные требования
+
+- Flutter SDK (^3.10.4)
+- Dart SDK (^3.10.4)
+- Настройка проекта Firebase
+
+## Установка
+
+1. **Клонируйте репозиторий**:
+   ```bash
+   git clone https://github.com/Zakirov-Yuriy/Message.git
+   cd Message
+   ```
+
+2. **Установите зависимости**:
+   ```bash
+   flutter pub get
+   ```
+
+3. **Настройте Firebase**:
+   - Создайте проект Firebase на [Firebase Console](https://console.firebase.google.com/)
+   - Добавьте свои приложения Android/iOS в проект
+   - Скачайте файлы `google-services.json` (Android) и `GoogleService-Info.plist` (iOS)
+   - Разместите их в соответствующих директориях (`android/app/` для Android, `ios/Runner/` для iOS)
+   - При необходимости обновите `lib/firebase_options.dart`
+
+4. **Настройте переменные окружения** (при необходимости):
+   - Создайте файл `.env` в корневой директории
+   - Добавьте необходимые переменные окружения
+
+5. **Запустите генерацию кода**:
+   ```bash
+   flutter pub run build_runner build
+   ```
+
+6. **Запустите приложение**:
+   ```bash
+   flutter run
+   ```
+
+## Структура проекта
+
+```
+lib/
+├── app/
+│   ├── di/          # Настройка внедрения зависимостей
+│   ├── router/      # Конфигурация маршрутизации приложения
+│   ├── theme/       # Темизация приложения
+│   └── widgets/     # Общие виджеты
+├── core/            # Основные утилиты и абстракции
+├── features/        # Модули на основе функций
+│   ├── auth/        # Функция аутентификации
+│   ├── calls/       # Функция голосовых звонков
+│   ├── chat/        # Функциональность чата
+│   ├── contacts/    # Управление контактами
+│   └── settings/    # Настройки приложения
+└── main.dart        # Точка входа в приложение
+```
+
+## Сборка для продакшена
+
+### Android APK
+```bash
+flutter build apk --release
+```
+
+### iOS
+```bash
+flutter build ios --release
+```
+
+### Web
+```bash
+flutter build web --release
+```
+

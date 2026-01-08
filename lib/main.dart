@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 import 'app/di/injection.dart';
 import 'app/router/app_router.dart';
@@ -12,11 +13,8 @@ import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-
-
+  await initializeDateFormatting('ru');
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   await setupInjection();
 
@@ -40,6 +38,7 @@ class MessageApp extends StatelessWidget {
         darkTheme: AppTheme.darkTheme,
         themeMode: ThemeMode.system,
         routerConfig: AppRouter.router,
+        debugShowCheckedModeBanner: false,
       ),
     );
   }

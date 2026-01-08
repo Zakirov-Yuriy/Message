@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
-import '../../features/auth/presentation/bloc/auth_event.dart';
 import '../../features/auth/presentation/bloc/auth_state.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
+import '../../features/calls/presentation/pages/calls_screen.dart';
+import '../../features/chat/presentation/pages/chat_screen.dart';
+import '../../features/chat/presentation/pages/chats_screen.dart';
+import '../../features/contacts/presentation/pages/contacts_screen.dart';
+import '../../features/settings/presentation/pages/settings_screen.dart';
 
 /// Конфигурация маршрутизации приложения
 class AppRouter {
@@ -23,17 +26,49 @@ class AppRouter {
       GoRoute(
         path: '/home',
         name: 'home',
-        builder: (context, state) => const HomePage(),
+        builder: (context, state) => BlocBuilder<AuthBloc, AuthState>(
+          builder: (context, state) {
+            if (state is AuthAuthenticated) {
+              return const ChatsScreen();
+            } else {
+              // Если состояние не AuthAuthenticated, перенаправляем на логин
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                context.go('/auth');
+              });
+              return const Scaffold(
+                body: Center(child: CircularProgressIndicator()),
+              );
+            }
+          },
+        ),
+      ),
+
+      // Контакты
+      GoRoute(
+        path: '/contacts',
+        name: 'contacts',
+        builder: (context, state) => const ContactsScreen(),
+      ),
+
+      // Звонки
+      GoRoute(
+        path: '/calls',
+        name: 'calls',
+        builder: (context, state) => const CallsScreen(),
       ),
 
       // Чат с конкретным пользователем
       GoRoute(
         path: '/chat/:userId',
         name: 'chat',
-        builder: (context, state) {
-          final userId = state.pathParameters['userId']!;
-          return ChatPage(userId: userId);
-        },
+        builder: (context, state) => const ChatScreen(),
+      ),
+
+      // Настройки
+      GoRoute(
+        path: '/settings',
+        name: 'settings',
+        builder: (context, state) => const SettingsScreen(),
       ),
 
       // Профиль пользователя
@@ -46,101 +81,6 @@ class AppRouter {
   );
 }
 
-/// Заглушки для страниц (будут реализованы)
-class AuthPage extends StatelessWidget {
-  const AuthPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(child: Text('Auth Page')),
-    );
-  }
-}
-
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<AuthBloc, AuthState>(
-      builder: (context, state) {
-        if (state is AuthAuthenticated) {
-          final user = state.user;
-          return Scaffold(
-            appBar: AppBar(
-              title: const Text('Главная'),
-              actions: [
-                IconButton(
-                  icon: const Icon(Icons.logout),
-                  onPressed: () {
-                    context.read<AuthBloc>().add(const LogoutEvent());
-                  },
-                ),
-              ],
-            ),
-            body: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    'Добро пожаловать!',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 20),
-                  Text(
-                    'Email: ${user.email}',
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  if (user.displayName != null) ...[
-                    const SizedBox(height: 10),
-                    Text(
-                      'Имя: ${user.displayName}',
-                      style: const TextStyle(fontSize: 16),
-                    ),
-                  ],
-                  const SizedBox(height: 40),
-                  const Text(
-                    'Чат будет здесь...',
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () {
-                      context.read<AuthBloc>().add(const LogoutEvent());
-                    },
-                    child: const Text('Выйти из приложения'),
-                  ),
-                ],
-              ),
-            ),
-          );
-        } else {
-          // Если состояние не AuthAuthenticated, перенаправляем на логин
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            context.go('/auth');
-          });
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
-        }
-      },
-    );
-  }
-}
-
-class ChatPage extends StatelessWidget {
-  const ChatPage({super.key, required this.userId});
-
-  final String userId;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(child: Text('Chat with $userId')),
-    );
-  }
-}
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -152,3 +92,4 @@ class ProfilePage extends StatelessWidget {
     );
   }
 }
+
