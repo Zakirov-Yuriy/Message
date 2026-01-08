@@ -9,12 +9,20 @@ import '../../features/chat/presentation/pages/chat_screen.dart';
 import '../../features/chat/presentation/pages/chats_screen.dart';
 import '../../features/contacts/presentation/pages/contacts_screen.dart';
 import '../../features/settings/presentation/pages/settings_screen.dart';
+import '../widgets/auth_gate.dart';
 
 /// Конфигурация маршрутизации приложения
 class AppRouter {
   static final GoRouter router = GoRouter(
-    initialLocation: '/auth',
+    initialLocation: '/',
     routes: [
+      // Корневой маршрут с проверкой аутентификации
+      GoRoute(
+        path: '/',
+        name: 'root',
+        builder: (context, state) => const AuthGate(),
+      ),
+
       // Аутентификация
       GoRoute(
         path: '/auth',
